@@ -39,10 +39,10 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Speed", animSpeed);
 
         // Attack triggers
-        if (Input.GetKeyDown(KeyCode.Z)) animator.SetTrigger("Attack1");
-        if (Input.GetKeyDown(KeyCode.X)) animator.SetTrigger("Attack2");
-        if (Input.GetKeyDown(KeyCode.C)) animator.SetTrigger("Attack3");
-        if (Input.GetKeyDown(KeyCode.V)) animator.SetTrigger("Special");
+        if (Input.GetKeyDown(KeyCode.C)) animator.SetTrigger("Attack1");
+        if (Input.GetKeyDown(KeyCode.E)) animator.SetTrigger("Attack2");
+        if (Input.GetKeyDown(KeyCode.Q)) animator.SetTrigger("Attack3");
+        if (Input.GetKeyDown(KeyCode.R)) animator.SetTrigger("Special");
     }
 
     void FixedUpdate()
