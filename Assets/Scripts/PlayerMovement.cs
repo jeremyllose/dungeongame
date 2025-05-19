@@ -11,11 +11,14 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 moveInput;
 
+    private PlayerEnergy energy;
+
     void Start()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        energy = GetComponent<PlayerEnergy>(); // Assumes PlayerEnergy is on the same GameObject
     }
 
     void Update()
@@ -38,11 +41,18 @@ public class PlayerMovement : MonoBehaviour
         float animSpeed = moveInput.magnitude > 0 ? currentSpeed : 0f;
         animator.SetFloat("Speed", animSpeed);
 
-        // Attack triggers
-        if (Input.GetKeyDown(KeyCode.C)) animator.SetTrigger("Attack1");
-        if (Input.GetKeyDown(KeyCode.E)) animator.SetTrigger("Attack2");
-        if (Input.GetKeyDown(KeyCode.Q)) animator.SetTrigger("Attack3");
-        if (Input.GetKeyDown(KeyCode.R)) animator.SetTrigger("Special");
+        // Attack triggers with energy checks
+        if (Input.GetKeyDown(KeyCode.C) && energy.TryUseEnergy(energy.attack1Cost))
+            animator.SetTrigger("Attack1");
+
+        if (Input.GetKeyDown(KeyCode.E) && energy.TryUseEnergy(energy.attack2Cost))
+            animator.SetTrigger("Attack2");
+
+        if (Input.GetKeyDown(KeyCode.Q) && energy.TryUseEnergy(energy.attack3Cost))
+            animator.SetTrigger("Attack3");
+
+        if (Input.GetKeyDown(KeyCode.R) && energy.TryUseEnergy(energy.specialCost))
+            animator.SetTrigger("Special");
     }
 
     void FixedUpdate()
