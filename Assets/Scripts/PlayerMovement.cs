@@ -12,13 +12,15 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveInput;
 
     private PlayerEnergy energy;
+    private PlayerExperience expSystem;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        energy = GetComponent<PlayerEnergy>(); // Assumes PlayerEnergy is on the same GameObject
+        energy = GetComponent<PlayerEnergy>();
+        expSystem = GetComponent<PlayerExperience>(); // Access level system
     }
 
     void Update()
@@ -31,27 +33,24 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput.x != 0)
             sr.flipX = moveInput.x < 0;
 
-        // Normalize input to prevent speed boost when moving diagonally
-        Vector2 normalizedInput = moveInput.normalized;
-
-        // Determine current speed (Shift = run)
+        // Determine current speed
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
-        // Set "Speed" param to 0 (idle) or walk/run (1 or 2, for example)
+        // Set animator speed parameter
         float animSpeed = moveInput.magnitude > 0 ? currentSpeed : 0f;
         animator.SetFloat("Speed", animSpeed);
 
-        // Attack triggers with energy checks
-        if (Input.GetKeyDown(KeyCode.C) && energy.TryUseEnergy(energy.attack1Cost))
+        // Attack input with level + energy checks
+        if (Input.GetKeyDown(KeyCode.C) && expSystem.CanUseAttack(1) && energy.TryUseEnergy(energy.attack1Cost))
             animator.SetTrigger("Attack1");
 
-        if (Input.GetKeyDown(KeyCode.E) && energy.TryUseEnergy(energy.attack2Cost))
+        if (Input.GetKeyDown(KeyCode.E) && expSystem.CanUseAttack(2) && energy.TryUseEnergy(energy.attack2Cost))
             animator.SetTrigger("Attack2");
 
-        if (Input.GetKeyDown(KeyCode.Q) && energy.TryUseEnergy(energy.attack3Cost))
+        if (Input.GetKeyDown(KeyCode.Q) && expSystem.CanUseAttack(3) && energy.TryUseEnergy(energy.attack3Cost))
             animator.SetTrigger("Attack3");
 
-        if (Input.GetKeyDown(KeyCode.R) && energy.TryUseEnergy(energy.specialCost))
+        if (Input.GetKeyDown(KeyCode.R) && expSystem.CanUseAttack(4) && energy.TryUseEnergy(energy.specialCost))
             animator.SetTrigger("Special");
     }
 
