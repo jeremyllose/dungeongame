@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerEnergy energy;
     private PlayerExperience expSystem;
+    private PlayerStamina stamina;
+
 
     void Start()
     {
@@ -20,7 +22,8 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         energy = GetComponent<PlayerEnergy>();
-        expSystem = GetComponent<PlayerExperience>(); // Access level system
+        expSystem = GetComponent<PlayerExperience>();
+        stamina = GetComponent<PlayerStamina>();
     }
 
     void Update()
@@ -33,10 +36,22 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput.x != 0)
             sr.flipX = moveInput.x < 0;
 
-        // Determine current speed
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        // Determine running status
+        bool wantsToRun = Input.GetKey(KeyCode.LeftShift);
+        bool canRun = wantsToRun && stamina.CanRun();
 
-        // Set animator speed parameter
+        // Tell stamina system if we're running
+        if (canRun && moveInput.magnitude > 0)
+        {
+            stamina.StartRunning();
+        }
+        else
+        {
+            stamina.StopRunning();
+        }
+
+        // Determine speed and set animation
+        float currentSpeed = canRun ? runSpeed : walkSpeed;
         float animSpeed = moveInput.magnitude > 0 ? currentSpeed : 0f;
         animator.SetFloat("Speed", animSpeed);
 
@@ -56,7 +71,17 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
-        rb.linearVelocity = moveInput.normalized * currentSpeed;
+        bool canRun = Input.GetKey(KeyCode.LeftShift) && stamina.CanRun();
+        if (canRun && moveInput.magnitude > 0)
+        {
+            if (!stamina.DrainRunStamina())
+            {
+                stamina.StopRunning();
+                canRun = false;
+            }
+        }
+
+        float speed = canRun ? runSpeed : walkSpeed;
+        rb.linearVelocity = moveInput.normalized * speed;
     }
 }

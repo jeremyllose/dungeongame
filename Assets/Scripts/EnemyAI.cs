@@ -13,14 +13,20 @@ public class SimpleEnemyAI : MonoBehaviour
     public float speed = 2f;
     private bool chasingPlayer = false;
 
+    private Animator animator;
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     void Update()
     {
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        if (PlayerInSight())
+        if (PlayerInSight() && distanceToPlayer <= detectionRadius)
         {
-            if (distanceToPlayer <= detectionRadius)
-                chasingPlayer = true;
+            chasingPlayer = true;
         }
 
         if (distanceToPlayer > chaseDistance)
@@ -31,10 +37,17 @@ public class SimpleEnemyAI : MonoBehaviour
         if (chasingPlayer)
         {
             MoveTowards(player.position);
+            animator.SetFloat("Speed", speed); // Trigger Walk animation
         }
         else
         {
             Patrol();
+        }
+
+        // Optionally trigger attack when very close
+        if (chasingPlayer && distanceToPlayer < 1.5f)
+        {
+            animator.SetTrigger("Attack");
         }
     }
 
@@ -44,13 +57,7 @@ public class SimpleEnemyAI : MonoBehaviour
         float distance = Vector2.Distance(transform.position, player.position);
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance, wallLayer | LayerMask.GetMask("Player"));
-
-        if (hit.collider != null)
-        {
-            return hit.collider.CompareTag("Player");
-        }
-
-        return false;
+        return hit.collider != null && hit.collider.CompareTag("Player");
     }
 
     void MoveTowards(Vector2 target)
@@ -63,18 +70,12 @@ public class SimpleEnemyAI : MonoBehaviour
         Transform patrolTarget = patrolPoints[patrolIndex];
         MoveTowards(patrolTarget.position);
 
+        float patrolSpeed = Vector2.Distance(transform.position, patrolTarget.position) > 0.1f ? speed : 0f;
+        animator.SetFloat("Speed", patrolSpeed); // Trigger Walk or Idle
+
         if (Vector2.Distance(transform.position, patrolTarget.position) < 0.2f)
         {
             patrolIndex = (patrolIndex + 1) % patrolPoints.Length;
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, chaseDistance);
     }
 }

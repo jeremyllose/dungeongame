@@ -6,19 +6,19 @@ public class PlayerStamina : MonoBehaviour
 {
     [Header("Stamina Settings")]
     public int maxStamina = 100;
-    private int currentStamina;
+    private float currentStamina;
 
     [Header("Regeneration")]
     public float regenRate = 5f; // Stamina per second
+    private bool isRunning;
 
     [Header("UI")]
     public Slider staminaSlider;
     public TMP_Text staminaText;
 
     [Header("Action Costs")]
-    public int runCost = 1;       // Cost per second while running
-    public int dashCost = 20;     // One-time cost
-    public int rollCost = 15;     // One-time cost
+    public float runCostPerSecond = 10f; // Drain per second while holding Shift
+    public float minStaminaToRun = 10f;  // Minimum stamina needed to start running
 
     private void Start()
     {
@@ -35,43 +35,58 @@ public class PlayerStamina : MonoBehaviour
 
     private void Update()
     {
-        RegenerateStamina();
+        if (!isRunning)
+        {
+            RegenerateStamina();
+        }
     }
 
     private void RegenerateStamina()
     {
         if (currentStamina < maxStamina)
         {
-            currentStamina += Mathf.CeilToInt(regenRate * Time.deltaTime);
+            currentStamina += regenRate * Time.deltaTime;
             currentStamina = Mathf.Min(currentStamina, maxStamina);
             UpdateStaminaUI();
         }
     }
 
-    public bool TryUseStamina(int cost)
+    public bool CanRun()
     {
-        if (currentStamina >= cost)
+        return currentStamina >= minStaminaToRun;
+    }
+
+    public void StartRunning()
+    {
+        isRunning = true;
+    }
+
+    public void StopRunning()
+    {
+        isRunning = false;
+    }
+
+    public bool DrainRunStamina()
+    {
+        float drainAmount = runCostPerSecond * Time.deltaTime;
+
+        if (currentStamina >= drainAmount)
         {
-            currentStamina -= cost;
+            currentStamina -= drainAmount;
             UpdateStaminaUI();
             return true;
         }
-        return false;
-    }
-
-    public bool CanUseStamina(int cost)
-    {
-        return currentStamina >= cost;
+        else
+        {
+            currentStamina = Mathf.Max(0, currentStamina);
+            UpdateStaminaUI();
+            return false;
+        }
     }
 
     private void UpdateStaminaUI()
     {
         if (staminaSlider != null) staminaSlider.value = currentStamina;
-        if (staminaText != null) staminaText.text = $"{currentStamina} / {maxStamina}";
-    }
-
-    public int GetCurrentStamina()
-    {
-        return currentStamina;
+        if (staminaText != null) staminaText.text = $"{Mathf.FloorToInt(currentStamina)} / {maxStamina}";
     }
 }
