@@ -15,6 +15,17 @@ public class SimpleEnemyAI : MonoBehaviour
 
     private Animator animator;
 
+    public GameObject swordHitbox; // Assign in inspector
+
+    public void EnableHitbox()
+    {
+        swordHitbox.SetActive(true);
+    }
+
+    public void DisableHitbox()
+    {
+        swordHitbox.SetActive(false);
+    }
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -34,6 +45,9 @@ public class SimpleEnemyAI : MonoBehaviour
             chasingPlayer = false;
         }
 
+        // Update animator detect state
+        animator.SetBool("Detect", chasingPlayer);
+
         if (chasingPlayer)
         {
             MoveTowards(player.position);
@@ -50,7 +64,6 @@ public class SimpleEnemyAI : MonoBehaviour
             animator.SetTrigger("Attack");
         }
     }
-
     bool PlayerInSight()
     {
         Vector2 direction = (player.position - transform.position).normalized;
