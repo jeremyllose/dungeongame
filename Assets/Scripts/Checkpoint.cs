@@ -6,7 +6,9 @@ public class Checkpoint : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Debug.Log("Checkpoint triggered at: " + transform.position);
             PlayerRespawnSystem.Instance.SetCheckpoint(transform.position);
         }
     }
+
 }

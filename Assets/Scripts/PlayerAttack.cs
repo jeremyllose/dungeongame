@@ -47,10 +47,12 @@ public class PlayerAttack : MonoBehaviour
 
         if (!playerXP.CanUseAttack(requiredLevel))
         {
-            Debug.Log($"You need to be at least level {requiredLevel} to use this attack.");
+            string message = $"Requires Level {requiredLevel} to use this attack.";
+            Debug.Log(message);
+            PlayerLogManager.Instance.Log(message);
             return;
         }
-
+        
         int cost = playerEnergy.GetAttackCost(attackNumber);
 
         if (playerEnergy.TryUseEnergy(cost))
