@@ -1,36 +1,44 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyRoomManager : MonoBehaviour
 {
-    public GameObject key; // Assign in inspector
-    public GameObject[] enemies; // Populate with enemies in Inspector
-    private bool roomTriggered = false;
+    public LockedDoor door;
+    public GameObject key;
+    public GameObject[] enemies;
+
+    private bool triggered = false;
 
     void Update()
     {
-        if (roomTriggered && AllEnemiesDefeated())
+        if (triggered && AllEnemiesDefeated())
         {
             key.SetActive(true);
-            roomTriggered = false; // Prevents repeat
+            triggered = false;
         }
     }
 
-    bool AllEnemiesDefeated()
+    public void TriggerRoom()
     {
-        foreach (var enemy in enemies)
+        if (!triggered)
+            StartCoroutine(StartRoomAfterDelay());
+    }
+
+    private IEnumerator StartRoomAfterDelay()
+    {
+        triggered = true;
+
+        yield return new WaitForSeconds(3.0f); // ⏱ Delay in seconds before door locks
+
+        door.Lock(); // Now lock the door after the delay
+    }
+    private bool AllEnemiesDefeated()
+    {
+        foreach (GameObject enemy in enemies)
         {
             if (enemy != null)
                 return false;
         }
         return true;
-    }
-
-    public void TriggerRoom()
-    {
-        roomTriggered = true;
-        foreach (var enemy in enemies)
-        {
-            enemy.SetActive(true); // Wake up or spawn enemies
-        }
     }
 }

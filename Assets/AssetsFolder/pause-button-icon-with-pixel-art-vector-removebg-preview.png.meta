@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      pause-button-icon-with-pixel-art-vector-removebg-preview_0: 2260407013247272345
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

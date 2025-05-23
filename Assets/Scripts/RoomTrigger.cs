@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class RoomTrigger : MonoBehaviour
 {
-    private bool triggered = false;
+    private bool activated = false;
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!triggered && other.CompareTag("Player"))
+        if (!activated && other.CompareTag("Player"))
         {
-            triggered = true;
             GetComponentInParent<EnemyRoomManager>().TriggerRoom();
-            Destroy(gameObject); // One-time trigger
+            activated = true;
+            Destroy(gameObject); // Optional: trigger only once
         }
     }
 }

@@ -5,6 +5,8 @@ public class PlayerAttack : MonoBehaviour
     private Animator animator;
     private PlayerEnergy playerEnergy;
 
+    private PlayerExperience playerXP;
+
     [Header("Attack Settings")]
     public Transform attackPoint;       // Assign in inspector (child object near weapon)
     public float attackRange = 1f;
@@ -14,12 +16,13 @@ public class PlayerAttack : MonoBehaviour
     public int attack2Damage = 15;
     public int attack3Damage = 20;
     public int specialDamage = 30;
-    
+
 
     void Start()
     {
         animator = GetComponent<Animator>();
         playerEnergy = GetComponent<PlayerEnergy>();
+        playerXP = GetComponent<PlayerExperience>();
     }
 
     void Update()
@@ -39,11 +42,19 @@ public class PlayerAttack : MonoBehaviour
 
     private void TryAttack(int attackNumber)
     {
+        // Level requirements: 1 = C, 2 = E, 3 = Q, 4 = R
+        int requiredLevel = attackNumber;
+
+        if (!playerXP.CanUseAttack(requiredLevel))
+        {
+            Debug.Log($"You need to be at least level {requiredLevel} to use this attack.");
+            return;
+        }
+
         int cost = playerEnergy.GetAttackCost(attackNumber);
 
         if (playerEnergy.TryUseEnergy(cost))
         {
-            // Enough energy, do attack animation
             switch (attackNumber)
             {
                 case 1: animator.SetTrigger("Attack1"); break;
