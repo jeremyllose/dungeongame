@@ -14,6 +14,13 @@ public class PlayerHealth : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sr;
 
+    public AudioClip HurtSFX;
+    public AudioClip DeathSFX;
+    AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
     void Start()
     {
         currentHealth = maxHealth;
@@ -36,12 +43,20 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth > 0)
         {
             animator.SetTrigger("Hurt");
+            // Play hurt SFX
+            if (audioManager != null)
+                audioManager.PlaySFX(audioManager.HurtSFX);
+
             StartCoroutine(HandleIFrames());
         }
         else
         {
             currentHealth = 0;
             animator.SetTrigger("Dead");
+
+            // Play death SFX
+            if (audioManager != null)
+                audioManager.PlaySFX(audioManager.DeathSFX);
 
             // Disable movement
             GetComponent<PlayerMovement>().enabled = false;

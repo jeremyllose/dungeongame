@@ -16,8 +16,15 @@ public class PlayerAttack : MonoBehaviour
     public int attack2Damage = 15;
     public int attack3Damage = 20;
     public int specialDamage = 30;
-
-
+    public AudioClip ATK1SFX;
+    public AudioClip ATK2SFX;
+    public AudioClip ATK3SFX;
+    public AudioClip ATK4SFX;
+    AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -52,17 +59,36 @@ public class PlayerAttack : MonoBehaviour
             PlayerLogManager.Instance.Log(message);
             return;
         }
-        
+
         int cost = playerEnergy.GetAttackCost(attackNumber);
 
         if (playerEnergy.TryUseEnergy(cost))
         {
             switch (attackNumber)
             {
-                case 1: animator.SetTrigger("Attack1"); break;
-                case 2: animator.SetTrigger("Attack2"); break;
-                case 3: animator.SetTrigger("Attack3"); break;
-                case 4: animator.SetTrigger("Special"); break;
+                case 1:
+                    animator.SetTrigger("Attack1");
+                    if (audioManager != null)
+                        audioManager.PlaySFX(audioManager.ATK1SFX); // Replace with specific SFX if available
+                    break;
+
+                case 2:
+                    animator.SetTrigger("Attack2");
+                    if (audioManager != null)
+                        audioManager.PlaySFX(audioManager.ATK2SFX); // Replace with specific SFX if available
+                    break;
+
+                case 3:
+                    animator.SetTrigger("Attack3");
+                    if (audioManager != null)
+                        audioManager.PlaySFX(audioManager.ATK3SFX); // Replace with specific SFX if available
+                    break;
+
+                case 4:
+                    animator.SetTrigger("Special");
+                    if (audioManager != null)
+                        audioManager.PlaySFX(audioManager.ATK4SFX); // Replace with special SFX
+                    break;
             }
         }
         else

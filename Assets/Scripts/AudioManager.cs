@@ -11,13 +11,14 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource SFXSource;
 
     public AudioClip menuSFX;
-    public AudioClip CarSFX;
-    public AudioClip ExplosionSFX;
-    public AudioClip PowerUpSFX;
+    public AudioClip SnakeFigureSFX;
+    public AudioClip ATK1SFX;
+    public AudioClip ATK2SFX;
+    public AudioClip ATK3SFX;
+    public AudioClip ATK4SFX;
+    public AudioClip HurtSFX;
+    public AudioClip DeathSFX;
     public AudioClip VictorySFX;
-    public AudioClip DefeatSFX;
-
-    public AudioClip ThankYouSFX;
 
     [System.Obsolete]
     private void Awake()

@@ -1,7 +1,13 @@
 using UnityEngine;
 
 public class Collectible : MonoBehaviour
+
 {
+    AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
     public int xpValue = 10;
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -13,6 +19,11 @@ public class Collectible : MonoBehaviour
             {
                 xp.AddXP(xpValue);
                 Destroy(gameObject);
+            }
+            // Play sound effect
+            if (audioManager != null)
+            {
+                audioManager.PlaySFX(audioManager.SnakeFigureSFX);
             }
         }
     }
