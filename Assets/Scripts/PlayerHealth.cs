@@ -16,11 +16,13 @@ public class PlayerHealth : MonoBehaviour
 
     public AudioClip HurtSFX;
     public AudioClip DeathSFX;
-    AudioManager audioManager;
+    private AudioManager audioManager;
+
     private void Awake()
     {
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -43,9 +45,10 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth > 0)
         {
             animator.SetTrigger("Hurt");
+
             // Play hurt SFX
-            if (audioManager != null)
-                audioManager.PlaySFX(audioManager.HurtSFX);
+            if (audioManager != null && HurtSFX != null)
+                audioManager.PlaySFX(HurtSFX);
 
             StartCoroutine(HandleIFrames());
         }
@@ -55,10 +58,10 @@ public class PlayerHealth : MonoBehaviour
             animator.SetTrigger("Dead");
 
             // Play death SFX
-            if (audioManager != null)
-                audioManager.PlaySFX(audioManager.DeathSFX);
+            if (audioManager != null && DeathSFX != null)
+                audioManager.PlaySFX(DeathSFX);
 
-            // Disable movement
+            // Disable movement and attack
             GetComponent<PlayerMovement>().enabled = false;
             GetComponent<PlayerAttack>().enabled = false;
 
@@ -90,29 +93,32 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = maxHealth;
         sr.color = Color.white;
 
-        // Trigger animator revive transition
+        // Trigger revive animation
         animator.SetTrigger("Revive");
 
-        // Respawn at checkpoint
+        // Respawn the player at the checkpoint
         PlayerRespawnSystem.Instance.RespawnPlayer(gameObject);
 
         // Re-enable controls
         GetComponent<PlayerMovement>().enabled = true;
         GetComponent<PlayerAttack>().enabled = true;
 
-        // Hide panel
+        // Hide the death panel
         if (deathPanel != null)
             deathPanel.SetActive(false);
+
+        // Unlock all locked doors
+        LockedDoor[] doors = FindObjectsOfType<LockedDoor>();
+        foreach (LockedDoor door in doors)
+        {
+            door.Unlock();
+        }
     }
+
     public void Heal(int amount)
     {
-
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         Debug.Log("Healed: " + amount + ", Current Health: " + currentHealth);
         PlayerLogManager.Instance.Log("You healed for " + amount + ".");
-
-
     }
-
-
 }
