@@ -28,7 +28,7 @@ public class EnemyRoomManager : MonoBehaviour
     {
         triggered = true;
 
-        yield return new WaitForSeconds(3.0f); // ⏱ Delay in seconds before door locks
+        yield return new WaitForSeconds(2.5f); // ⏱ Delay in seconds before door locks
 
         door.Lock(); // Now lock the door after the delay
     }
