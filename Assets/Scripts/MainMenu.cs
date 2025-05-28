@@ -5,7 +5,7 @@ using TMPro;  // For TextMeshPro
 public class MainMenu : MonoBehaviour
 {
     // Scene name for the game
-    [SerializeField] private string gameSceneName = "Level 1";
+    [SerializeField] private string gameSceneName = "CutScene";
 
     // References to UI elements
     [SerializeField] private GameObject mainMenuPanel; // Main menu UI
@@ -32,13 +32,13 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Play button pressed, loading game...");
 
         // Ensure you're not unloading and loading the same scene at the same time
-        if (SceneManager.GetActiveScene().name != "Level 1")
+        if (SceneManager.GetActiveScene().name != "CutScene")
         {
-            SceneManager.LoadSceneAsync("Level 1"); // Load the desired scene
+            SceneManager.LoadSceneAsync("CutScene"); // Load the desired scene
         }
         else
         {
-            Debug.LogWarning("Level1 is already active. Skipping reload.");
+            Debug.LogWarning("CutScene is already active. Skipping reload.");
         }
 
         // Play sound effect
