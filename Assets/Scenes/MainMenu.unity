@@ -2529,7 +2529,7 @@ MonoBehaviour:
   ATK4SFX: {fileID: 8300000, guid: af4a0990b49c3e941a26cdb236189db0, type: 3}
   HurtSFX: {fileID: 8300000, guid: cfec9bfd6e7e9b54ba4e472d291baa83, type: 3}
   DeathSFX: {fileID: 8300000, guid: 0725ac9dcb2289548b29640f8c71fdc6, type: 3}
-  VictorySFX: {fileID: 8300000, guid: 924e97b68a1480740a084f68cb94d843, type: 3}
+  VictorySFX: {fileID: 8300000, guid: d0a2732ff4010a740aa6fa1e309c15e6, type: 3}
 --- !u!4 &1792585423
 Transform:
   m_ObjectHideFlags: 0

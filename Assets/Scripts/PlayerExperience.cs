@@ -32,6 +32,8 @@ public class PlayerExperience : MonoBehaviour
         {
             currentLevel++;
             Debug.Log($"Level Up! You are now level {currentLevel}");
+            // Log to UI
+            PlayerLogManager.Instance?.Log($"Level Up! You reached Level {currentLevel}!");
         }
     }
 
